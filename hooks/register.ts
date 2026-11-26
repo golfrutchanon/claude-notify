@@ -6,9 +6,6 @@
 //   perm  Claude ขออนุญาต (classic.PermissionRequest)
 // เสียงสั้นดังครั้งเดียว:
 //   fail     คำสั่งล้มเหลว → ตุ๊บ (Basso) ครั้งแรกของแต่ละรอบเท่านั้น
-//   agent    Agent ย่อยเสร็จ → ติ๊ง (Tink) ค่าเริ่มต้นปิด
-//   context  Context ข้าม 70% และ 90% → เตือนเกณฑ์ละครั้ง
-//   quota    โควตา 5 ชม./7 วัน ข้าม 80% และ 95% → เกณฑ์ละ 1 ทีต่อรอบโควตา
 //
 // ไม่ใช้ afplay / ไม่เรียกโปรแกรมภายนอก: อ่านไฟล์เสียงมาตรฐานในเครื่อง
 // (Mac /System/Library/Sounds · Windows C:\Windows\Media) แล้วเล่นผ่าน $.audio.play
@@ -16,10 +13,10 @@
 import type { EngineInterface, Register } from 'claude-code'
 
 import {
-  DEFAULTS, HELP, LABEL, MAC_DIR, QUOTA_KINDS, SEQUENCE, SOUND_NAME, TONES, WIN_DIR,
-  CONTEXT_STEPS, apply, crossed, isOn, parseCommand, quotaAlerts, settingsOf, statusText,
+  DEFAULTS, HELP, LABEL, MAC_DIR, SEQUENCE, SOUND_NAME, TONES, WIN_DIR,
+  apply, isOn, parseCommand, settingsOf, statusText,
 } from './logic.ts'
-import type { Part, QuotaSeen, Settings, Tone } from './logic.ts'
+import type { Part, Settings, Tone } from './logic.ts'
 import { buildClips, fromBase64 } from './sound.ts'
 import type { Clip } from './sound.ts'
 
@@ -28,7 +25,6 @@ let settings: Settings = DEFAULTS
 let platform: 'mac' | 'win' | undefined
 let mainBusyUntil = 0
 let failRang = false
-let contextSeen = 0
 const tones = new Map<Tone, Promise<{ name: string; bytes: Uint8Array } | undefined>>()
 const clips = new Map<string, Promise<{ clips: Clip[]; ms: number[] }>>()
 
@@ -131,7 +127,7 @@ async function ring($: EngineInterface, part: Part): Promise<void> {
 }
 
 async function test($: EngineInterface): Promise<void> {
-  for (const part of ['done', 'fail', 'agent', 'context', 'quota'] as const) {
+  for (const part of ['done', 'fail'] as const) {
     await playSequence($, part).catch(quiet)
     await $.clock.sleep(700).catch(quiet)
   }
@@ -144,7 +140,6 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     const started = await next(e)
     failRang = false
-    contextSeen = 0
     mainBusyUntil = 0
     await detectPlatform($)
     await loadSettings($)
@@ -164,10 +159,10 @@ export const register: Register = on => {
     const now = await loadSettings($)
     if (cmd.kind === 'test') {
       void test($)
-      const order = ['done', 'fail', 'agent', 'context', 'quota'] as const
+      const order = ['done', 'fail'] as const
       return {
         text: [
-          '🔊 กำลังเล่นทุกเสียงตามลำดับ (ราว 15 วินาที):',
+          '🔊 กำลังเล่นทุกเสียงตามลำดับ (ราว 10 วินาที):',
           ...order.map((p, i) => `  ${i + 1}. ${SOUND_NAME[p]} — ${LABEL[p]}${p === 'done' ? ' / ถามคำถาม / ขออนุญาต' : ''}`),
           now.enabled ? '' : '⚠️ ตอนนี้เสียงปิดอยู่ (ทดสอบดังได้) · พิมพ์ /notify เพื่อเปิดใช้งานจริง',
         ].filter(Boolean).join('\n'),
@@ -225,46 +220,4 @@ export const register: Register = on => {
     if (!isBlocked && !isWaiting) void ring($, 'done')
     return result
   })
-
-  // Agent ย่อยเสร็จ
-  on('classic.SubagentStop', async ($, e, next) => {
-    const result = await next(e)
-    void ring($, 'agent')
-    return result
-  })
-
-  // Context ใกล้เต็ม และโควตาใกล้หมด
-  on('session.measure', async ($, e, next) => {
-    const measured = await next(e)
-    try {
-      if (e.changed.includes('context') && e.context.percent !== undefined) {
-        const r = crossed(CONTEXT_STEPS, contextSeen, e.context.percent)
-        contextSeen = r.seen
-        if (r.step !== undefined && isOn(await loadSettings($), 'context')) {
-          void ring($, 'context')
-          $.ui.toast(`⚠️ Context ใช้ไปแล้ว ${Math.round(e.context.percent)}% — ใกล้เต็ม ลองพิมพ์ /compact หรือเริ่มแชทใหม่`)
-        }
-      }
-      if (e.changed.includes('rateLimits') && e.rateLimits.length > 0) {
-        let seen: QuotaSeen = {}
-        try {
-          const raw = await $.store.get('quotaSeen')
-          if (raw && typeof raw === 'object') seen = raw as QuotaSeen
-        } catch {
-          // ไม่มีค่าเดิม
-        }
-        const { alerts, seen: next2 } = quotaAlerts(seen, e.rateLimits)
-        await $.store.set('quotaSeen', next2).catch(quiet)
-        if (alerts.length > 0 && isOn(await loadSettings($), 'quota')) {
-          void ring($, 'quota')
-          const a = alerts[alerts.length - 1]!
-          $.ui.toast(`⚠️ โควตา ${QUOTA_KINDS[a.kind] ?? a.kind} ใช้ไปแล้ว ${Math.round(a.percent)}% (เกิน ${a.step}%)`)
-        }
-      }
-    } catch {
-      // การเตือนต้องไม่ทำให้ session สะดุด
-    }
-    return measured
-  })
 }
-

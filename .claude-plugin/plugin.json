@@ -1,8 +1,17 @@
 {
   "name": "copvang-notify",
-  "version": "0.1.0",
-  "description": "เสียงแจ้งเตือนสไตล์ก๊อปวาง: Glass ×4 + Hero เมื่อ Claude ตอบจบ ถามคำถาม หรือขออนุญาต · เสียงสั้นเมื่อคำสั่งล้มเหลว Agent ย่อยเสร็จ Context ใกล้เต็ม โควตาใกล้หมด · ใช้เสียงในเครื่อง Mac/Windows · ใช้ได้ในแอป Claude Desktop · /notify",
-  "author": { "name": "Copvang" },
-  "keywords": ["sound", "notification", "notify", "thai", "mod", "desktop"],
+  "version": "0.2.0",
+  "description": "เสียงแจ้งเตือนสไตล์ก๊อปวาง: Glass ×4 + Hero เมื่อ Claude ตอบจบ ถามคำถาม หรือขออนุญาต · ตุ๊บเมื่อคำสั่งล้มเหลว · ใช้เสียงในเครื่อง · ใช้ได้ในแอป Claude Desktop · /notify",
+  "author": {
+    "name": "Copvang"
+  },
+  "keywords": [
+    "sound",
+    "notification",
+    "notify",
+    "thai",
+    "mod",
+    "desktop"
+  ],
   "license": "MIT"
 }

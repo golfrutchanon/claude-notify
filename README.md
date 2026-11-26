@@ -12,8 +12,8 @@
 พิมพ์ 2 บรรทัดนี้ในช่องแชทของ Claude Code
 
 ```
-/plugin marketplace add golfrutchanon/cv-notify
-/plugin install copvang-notify@cv-notify
+/plugin marketplace add golfrutchanon/claude-notify
+/plugin install copvang-notify@claude-notify
 ```
 
 แล้วพิมพ์ `/reload-plugins` (หรือปิดเปิดแชทใหม่) แล้วลอง `/notify test`
@@ -32,16 +32,11 @@
 
 ถามคำถามกับขออนุญาตมาพร้อมกัน จะดังชุดเดียว ไม่ซ้อนกัน
 
-### เสียงสั้น ดังครั้งเดียว
+### เสียงสั้น: คำสั่งล้มเหลว
 
-| จังหวะ | เสียง | ดังเมื่อ |
-|---|---|---|
-| `fail` | ตุ๊บ (Basso) | คำสั่งล้มเหลว · ดังแค่ **ครั้งแรกของแต่ละรอบ** ไม่รัว · คุณกดปฏิเสธหรือกดหยุดเองไม่นับ |
-| `agent` | ติ๊ง (Tink) | Agent ย่อยทำงานเสร็จ · **ค่าเริ่มต้นปิด** |
-| `context` | Funk | Context ใช้ไปถึง 70% และ 90% · เกณฑ์ละครั้ง พร้อมข้อความเตือน |
-| `quota` | Sosumi | โควตา 5 ชม. หรือ 7 วัน เกิน 80% และ 95% · เกณฑ์ละ 1 ทีต่อรอบโควตา พร้อมข้อความเตือน |
+ตุ๊บ (Basso) 1 ครั้ง เมื่อคำสั่งล้มเหลว · ดังแค่ **ครั้งแรกของแต่ละรอบ** ไม่รัว · คุณกดปฏิเสธหรือกดหยุดเองไม่นับ
 
-ไม่มีเสียงติ๊กทุกครั้งที่ใช้เครื่องมือ และไม่มีเสียงตอนเริ่มแชท ตั้งใจให้เงียบที่สุดเท่าที่จำเป็น
+ไม่มีเสียง Agent ย่อย, Context ใกล้เต็ม, โควตา, เสียงติ๊กทุกครั้งที่ใช้เครื่องมือ และเสียงตอนเริ่มแชท ตั้งใจให้เงียบที่สุดเท่าที่จำเป็น
 
 ---
 
@@ -53,9 +48,9 @@
 | `/notify test` | ลองฟังทุกเสียงตามลำดับ (ดังแม้ตอนปิดเสียงอยู่) |
 | `/notify status` | ดูว่าจังหวะไหนเปิดอยู่ |
 | `/notify on` / `/notify off` | เปิด / ปิดทั้งหมด |
-| `/notify <จังหวะ> on` หรือ `off` | เปิด-ปิดทีละจังหวะ เช่น `/notify fail off` · `/notify agent on` |
+| `/notify <จังหวะ> on` หรือ `off` | เปิด-ปิดทีละจังหวะ เช่น `/notify fail off` · `/notify done on` |
 
-พิมพ์ภาษาไทยก็ได้ เช่น `/notify ทดสอบ` · `/notify โควตา ปิด` · `/notify เอเจนต์ เปิด`
+พิมพ์ภาษาไทยก็ได้ เช่น `/notify ทดสอบ` · `/notify ล้มเหลว ปิด` · `/notify ถาม เปิด`
 ค่าที่ตั้งไว้จำข้ามแชท ไม่ต้องตั้งใหม่ทุกครั้ง
 
 ---
@@ -64,8 +59,8 @@
 
 ใช้เสียงมาตรฐานที่มีอยู่แล้วในเครื่องคุณ **ฟรี ไม่ต้องดาวน์โหลดเพิ่ม**
 
-- **Mac:** `/System/Library/Sounds` (Glass, Hero, Basso, Tink, Funk, Sosumi)
-- **Windows:** `C:\Windows\Media` (Windows Notify System Generic, tada, Windows Background, Windows Ding, Windows Exclamation, Windows Battery Low · ไม่มีไฟล์ไหนจะลองไฟล์สำรอง)
+- **Mac:** `/System/Library/Sounds` (Glass, Hero, Basso)
+- **Windows:** `C:\Windows\Media` (Windows Notify System Generic, tada, Windows Background · ไม่มีไฟล์ไหนจะลองไฟล์สำรอง)
 - หาไฟล์เสียงไม่เจอ หรือเครื่องเล่นเสียงไม่ได้ = **เงียบ ไม่ขึ้น error** งานของ Claude ไม่สะดุด
 
 ---

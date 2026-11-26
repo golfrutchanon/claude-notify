@@ -1,5 +1,5 @@
 {
-  "name": "cv-notify",
+  "name": "claude-notify",
   "owner": {
     "name": "Copvang"
   },
@@ -8,7 +8,7 @@
     {
       "name": "copvang-notify",
       "source": "./",
-      "description": "เสียงแจ้งเตือนสไตล์ก๊อปวาง: Glass ×4 + Hero เมื่อ Claude ตอบจบ ถามคำถาม หรือขออนุญาต · เสียงสั้นเมื่อคำสั่งล้มเหลว Agent ย่อยเสร็จ Context ใกล้เต็ม โควตาใกล้หมด · /notify"
+      "description": "เสียงแจ้งเตือนสไตล์ก๊อปวาง: Glass ×4 + Hero เมื่อ Claude ตอบจบ ถามคำถาม หรือขออนุญาต · ตุ๊บเมื่อคำสั่งล้มเหลว · /notify"
     }
   ]
 }

@@ -1,4 +1,4 @@
-# CLAUDE.md — cv-notify (Mod copvang-notify)
+# CLAUDE.md — claude-notify (Mod copvang-notify)
 
 ## เรียกสกิลหลัก รหัส `cv-coding-7f3a` ก่อนเสมอ (บังคับ)
 **ก่อนเริ่มงานพัฒนาทุกครั้ง ต้องเรียกสกิลที่มีรหัส `cv-coding-7f3a` ก่อนลงมือ** — แก้โค้ด แก้บั๊ก เพิ่มฟีเจอร์ เปลี่ยนค่าตั้ง รันเทสต์ สร้างกิ่ง merge deploy · งานเล็กก็ต้องเรียก แม้ผู้ใช้ไม่ได้เอ่ยชื่อสกิล
@@ -26,7 +26,7 @@ Claude Code Mod (hooks module TypeScript ไม่มี Node/DOM) · เล่�
 ## คำสั่งที่ใช้บ่อย
 - ตรวจ: `claude plugin validate .`
 - เทสต์: `claude plugin test .`
-- อัปเดตบนเครื่องหลัง push: `claude plugin marketplace update cv-notify && claude plugin update copvang-notify@cv-notify` แล้ว `/reload-plugins`
+- อัปเดตบนเครื่องหลัง push: `claude plugin marketplace update claude-notify && claude plugin update copvang-notify@claude-notify` แล้ว `/reload-plugins`
 
 ## ห้ามทำ (เฉพาะโปรเจกต์นี้)
 - ห้ามใช้ `afplay` / `$.process` เล่นเสียง และห้ามจำกัดด้วย `surface !== 'terminal'` — ต้องใช้ได้ในแอป Claude Desktop
