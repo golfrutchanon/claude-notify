@@ -203,7 +203,7 @@ describe('register', () => {
     const isThere = (path: string) => [...exists].some(f => path.endsWith(f))
     on('fs.exists', ($, e) => ({ value: isThere(e.path) }))
     on('fs.read', () => ({ value: { base64: '' } }))
-    on('process.run', ($, e) => { runs.push(e.argv); return { value: { exitCode: 0, stdout: '', stderr: '' } } })
+    on('process.run', ($, e) => { runs.push(e.argv); return { value: { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } } })
     on('audio.play', () => { plays++; return { value: undefined } })
     on('session.start', ($, e) => ({ cwd: e.cwd }))
     on('command.register', ($, e) => ({ value: { command: e.name } }))
