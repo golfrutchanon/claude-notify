@@ -21,7 +21,7 @@
 - ไม่จด MEMORY เฉพาะการอ่าน ค้น หรือตอบคำถามที่ไม่ทำให้อะไรเปลี่ยน · ก่อนบอกว่าเสร็จและก่อน commit ตรวจว่า MEMORY กับ TODO ตรงความจริง
 
 ## Stack
-Claude Code Mod (hooks module TypeScript ไม่มี Node/DOM) · เล่นเสียงด้วย `$.audio.play` base64 จากไฟล์เสียงระบบ (ห้ามแจกไฟล์เสียง Apple/Microsoft) · ไม่มี dependency
+Claude Code Mod (hooks module TypeScript ไม่มี Node/DOM) · เล่นเสียงด้วย `$.audio.play` base64 จากไฟล์เสียงระบบ (Mac) / PowerShell SoundPlayer (Windows) (ห้ามแจกไฟล์เสียง Apple/Microsoft) · ไม่มี dependency
 
 ## คำสั่งที่ใช้บ่อย
 - ตรวจ: `claude plugin validate .`
@@ -29,7 +29,7 @@ Claude Code Mod (hooks module TypeScript ไม่มี Node/DOM) · เล่�
 - อัปเดตบนเครื่องหลัง push: `claude plugin marketplace update claude-notify && claude plugin update copvang-notify@claude-notify` แล้ว `/reload-plugins`
 
 ## ห้ามทำ (เฉพาะโปรเจกต์นี้)
-- ห้ามใช้ `afplay` / `$.process` เล่นเสียง และห้ามจำกัดด้วย `surface !== 'terminal'` — ต้องใช้ได้ในแอป Claude Desktop
+- Mac: เล่นเสียงด้วย `$.audio.play` เท่านั้น ห้ามใช้ `afplay` / `$.process` · Windows: ใช้ `$.process.run` สั่ง PowerShell (`System.Media.SoundPlayer`) ได้ เพราะเครื่องเล่นของ Claude Code ไม่มีบน Windows (เจ้าของอนุมัติ 2026-11-26) · ห้ามจำกัดด้วย `surface !== 'terminal'` — ต้องใช้ได้ในแอป Claude Desktop
 - ห้ามใส่ไฟล์เสียงของ Apple/Microsoft ใน repo
 - ห้าม push / ออกเวอร์ชันใหม่โดยไม่ถามเจ้าของก่อน
 - ข้อความที่ผู้ใช้เห็นต้องเป็นภาษาไทย

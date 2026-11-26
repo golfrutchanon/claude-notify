@@ -116,6 +116,16 @@ export const TONES: Record<Tone, { mac: string; win: readonly string[] }> = {
   basso: { mac: 'Basso.aiff', win: ['Windows Background.wav', 'chord.wav', 'Windows Critical Stop.wav'] },
 }
 
+/**
+ * คำสั่ง PowerShell ที่เล่นไฟล์ WAV ต่อกันจนจบ (System.Media.SoundPlayer มีในทุก Windows)
+ * ชื่อไฟล์อยู่ในเครื่องหมาย ' จึงต้องเปลี่ยน ' ในชื่อเป็น ''
+ */
+export function windowsPlayCommand(paths: readonly string[]): string[] {
+  const list = paths.map(p => `'${p.replace(/'/g, "''")}'`).join(',')
+  const script = `$ErrorActionPreference='Stop'; foreach ($f in @(${list})) { (New-Object System.Media.SoundPlayer $f).PlaySync() }`
+  return ['powershell.exe', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script]
+}
+
 /** ลำดับเสียงของแต่ละจังหวะ */
 export const SEQUENCE: Record<Part, readonly Tone[]> = {
   done: ['glass', 'glass', 'glass', 'glass', 'hero'],

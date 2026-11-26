@@ -6,6 +6,9 @@
 - แปลง AIFF → WAV แล้วต่อ Glass ×4 + Hero เป็นก้อนเดียว: ได้จังหวะเหมือน afplay เดิมเป๊ะ ไม่ขึ้นกับว่าเครื่องเล่นรอจบหรือไม่ และ WAV เล่นได้ทุกที่ (Chromium เล่น AIFF ไม่ได้)
 - ข้อแลก: ส่งข้อมูลราว 3 MB ต่อการเล่นเสียงหลัก 1 ครั้ง (เตรียมไว้ตั้งแต่เปิดแชท ใช้ซ้ำในความจำ)
 
+## Windows เล่นเสียงด้วย PowerShell
+- คู่มือ Claude Code บอก `$.audio.play` บน Windows ไม่มีเครื่องเล่น (เงียบ) · PowerShell SoundPlayer มีในทุก Windows · `$.process.run` ทำงานบนเครื่องที่ Claude Code รัน จึงได้ทั้ง Desktop และ Terminal · ลูกค้าใช้โหมด Bypass ตามที่เจ้าของบอก · ข้อแลก: ยังไม่ได้ลองบน Windows จริง
+
 ## ตรวจ "ตอบจบจริง" ด้วย `classic.Stop`
 - มี `background_tasks` และ `session_crons` ให้ตรงกับ hook เดิมของเจ้าของ · ถ้า hook อื่นสั่ง block ให้ Claude ทำต่อ ไม่ดัง
 

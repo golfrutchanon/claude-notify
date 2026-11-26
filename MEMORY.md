@@ -25,3 +25,5 @@
 - เปลี่ยนเสียง agent เป็น Ping (เชิงสำเร็จ) · ตอบเรื่อง /notify: ไม่ชน ใช้ต่อ · เจ้าของตอบ "ยังไม่ push" → ค้าง: การเปลี่ยนชื่อ claude-notify + เสียง Ping ยังไม่ commit/push/ติดตั้งใหม่
 - เจ้าของขอเปลี่ยนเสียง Context (Funk ได้ยินบ่อยใน Mac) → Submarine · ถามเรื่องตัดโควตาออก รอคำตอบ · ยังไม่ push
 - เจ้าของสั่งตัดเสียง Agent ย่อย / Context / โควตา ออกทั้งหมด เหลือ done·ask·perm·fail → v0.2.0 เทสต์ 7/7 · ยังไม่ commit/push (รอสั่ง) · เสร็จ
+- เจ้าของสั่งทำเสียง Windows ด้วยเลย (ลูกค้าใช้ Bypass) → merge กิ่ง feat/windows-sound เข้า dev, เทสต์ Windows เพิ่ม รวม 9/9, แก้กฎ CLAUDE.md ให้ Windows ใช้ PowerShell ได้ · ยังไม่ push · เสร็จ
+- เจ้าของขอปิด Mod lot-map (Work Map ขึ้นตลอด) → คำสั่ง `claude plugin disable lot-map@lot-map` ถูกระบบความปลอดภัยบล็อก ให้เจ้าของปิดเอง · ค้าง

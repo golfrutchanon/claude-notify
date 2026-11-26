@@ -10,4 +10,5 @@
 - [x] git + GitHub public claude-notify
 - [x] ติดตั้งบนเครื่องเจ้าของ
 - [ ] เจ้าของฟังจริงในแอป Desktop (`/notify test`)
-- [ ] เสียงบน Windows: โค้ดร่างอยู่กิ่ง `feat/windows-sound` (PowerShell) ต้องเทสต์ + ลองบนเครื่อง Windows จริง · พักไว้ เจ้าของสั่งเอา Mac ก่อน
+- [x] เสียงบน Windows ด้วย PowerShell (v0.2.0) เทสต์ผ่าน
+- [ ] ลองบนเครื่อง Windows จริง (ยังไม่มีเครื่อง)

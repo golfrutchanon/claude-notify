@@ -14,7 +14,7 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import {
   DEFAULTS, HELP, LABEL, MAC_DIR, SEQUENCE, SOUND_NAME, TONES, WIN_DIR,
-  apply, isOn, parseCommand, settingsOf, statusText,
+  apply, isOn, parseCommand, settingsOf, statusText, windowsPlayCommand,
 } from './logic.ts'
 import type { Part, Settings, Tone } from './logic.ts'
 import { buildClips, fromBase64 } from './sound.ts'
@@ -26,7 +26,8 @@ let platform: 'mac' | 'win' | undefined
 let mainBusyUntil = 0
 let failRang = false
 const tones = new Map<Tone, Promise<{ name: string; bytes: Uint8Array } | undefined>>()
-const clips = new Map<string, Promise<{ clips: Clip[]; ms: number[] }>>()
+type Ready = { clips: Clip[]; ms: number[]; paths: string[] }
+const clips = new Map<string, Promise<Ready>>()
 
 const quiet = (): undefined => undefined
 
@@ -60,7 +61,7 @@ function loadTone($: EngineInterface, tone: Tone): Promise<{ name: string; bytes
     found = (async () => {
       const mac = [MAC_DIR + TONES[tone].mac]
       const win = TONES[tone].win.map(n => WIN_DIR + n)
-      const order = platform === 'win' ? [...win, ...mac] : platform === 'mac' ? mac : [...mac, ...win]
+      const order = platform === 'win' ? [...win, ...mac] : [...mac, ...win]
       for (const path of order) {
         try {
           if (!(await $.fs.exists(path))) continue
@@ -77,7 +78,7 @@ function loadTone($: EngineInterface, tone: Tone): Promise<{ name: string; bytes
   return found
 }
 
-function prepare($: EngineInterface, part: Part): Promise<{ clips: Clip[]; ms: number[] }> {
+function prepare($: EngineInterface, part: Part): Promise<Ready> {
   const key = SEQUENCE[part].join('+')
   let ready = clips.get(key)
   if (!ready) {
@@ -85,8 +86,8 @@ function prepare($: EngineInterface, part: Part): Promise<{ clips: Clip[]; ms: n
       const files = (await Promise.all(SEQUENCE[part].map(t => loadTone($, t)))).filter(
         (f): f is { name: string; bytes: Uint8Array } => f !== undefined,
       )
-      return buildClips(files)
-    })().catch(() => ({ clips: [], ms: [] }))
+      return { ...buildClips(files), paths: files.map(f => f.name) }
+    })().catch(() => ({ clips: [], ms: [], paths: [] }))
     clips.set(key, ready)
   }
   return ready
@@ -94,7 +95,9 @@ function prepare($: EngineInterface, part: Part): Promise<{ clips: Clip[]; ms: n
 
 /** เล่นเสียงของจังหวะนั้นจนจบ (ไม่โยน error) */
 async function playSequence($: EngineInterface, part: Part): Promise<void> {
-  const { clips: list, ms } = await prepare($, part)
+  const { clips: list, ms, paths } = await prepare($, part)
+  // Windows: เครื่องเล่นเสียงของ Claude Code ไม่มีบน Windows จึงให้ PowerShell เล่นไฟล์เอง
+  if (paths.length > 0 && paths.every(p => p.startsWith(WIN_DIR)) && (await playOnWindows($, paths))) return
   for (let i = 0; i < list.length; i++) {
     const started = await $.clock.now()
     try {
@@ -107,6 +110,16 @@ async function playSequence($: EngineInterface, part: Part): Promise<void> {
       const left = ms[i]! - ((await $.clock.now()) - started)
       if (left > 50) await $.clock.sleep(left)
     }
+  }
+}
+
+/** เล่นไฟล์ WAV ต่อกันด้วย PowerShell (มีในทุกเครื่อง Windows) · สำเร็จคืน true */
+async function playOnWindows($: EngineInterface, paths: readonly string[]): Promise<boolean> {
+  try {
+    const r = await $.process.run(windowsPlayCommand(paths), { timeoutMs: 60_000 })
+    return r.exitCode === 0
+  } catch {
+    return false // เรียก PowerShell ไม่ได้: ลองเครื่องเล่นของ Claude Code แทน
   }
 }
 

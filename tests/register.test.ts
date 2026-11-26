@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from 'claude-code/testing'
 
-import { DEFAULTS, apply, parseCommand, settingsOf } from '../hooks/logic.ts'
+import { DEFAULTS, apply, parseCommand, settingsOf, windowsPlayCommand } from '../hooks/logic.ts'
 import { buildClips, fromBase64, parseAiff, parseWav, toBase64 } from '../hooks/sound.ts'
 
 const RUN = { origin: { kind: 'composer' as const }, presentation: { isFullscreen: false, columns: 100 } }
@@ -191,5 +191,40 @@ describe('register', () => {
     await clock.advance(20_000)
     await clock.settle()
     expect(plays).toBe(0)
+  })
+
+  test('Windows: ให้ PowerShell เล่นไฟล์ใน C:\\Windows\\Media ต่อกัน', async ($, on) => {
+    const clock = mock.clock(on, { now: 1 })
+    mock.store(on, {})
+    const runs: (readonly string[])[] = []
+    let plays = 0
+    const exists = new Set(['C:\\Windows\\Media\\chimes.wav', 'C:\\Windows\\Media\\tada.wav', 'C:\\Windows\\Media\\chord.wav'])
+    // เครื่องทดสอบเป็น Mac จึงต่อ C:\\ ท้ายโฟลเดอร์งาน · บน Windows จริงเป็น path เต็ม
+    const isThere = (path: string) => [...exists].some(f => path.endsWith(f))
+    on('fs.exists', ($, e) => ({ value: isThere(e.path) }))
+    on('fs.read', () => ({ value: { base64: '' } }))
+    on('process.run', ($, e) => { runs.push(e.argv); return { value: { exitCode: 0, stdout: '', stderr: '' } } })
+    on('audio.play', () => { plays++; return { value: undefined } })
+    on('session.start', ($, e) => ({ cwd: e.cwd }))
+    on('command.register', ($, e) => ({ value: { command: e.name } }))
+    on('classic.Stop', () => ({}))
+    on('tool.call', () => ({ isError: true as const, result: 'exit 1', text: 'exit 1' }))
+
+    await $.session.start({ surface: 'desktop', isInteractive: true, cwd: 'C:\\w' })
+    await $.classic.Stop({ stop_hook_active: false, background_tasks: [], session_crons: [] })
+    await $.tool.call({ tool: 'Bash', command: 'false' })
+    await clock.settle()
+    expect(plays).toBe(0)
+    expect(runs).toHaveLength(2)
+    expect(runs[0]![0]).toBe('powershell.exe')
+    const script = runs[0]![runs[0]!.length - 1]!
+    expect(script.split('chimes.wav').length - 1).toBe(4)
+    expect(script).toContain('tada.wav')
+    expect(runs[1]![runs[1]!.length - 1]).toContain('chord.wav')
+  })
+
+  test('คำสั่ง PowerShell กันเครื่องหมาย \' ในชื่อไฟล์', async () => {
+    const argv = windowsPlayCommand(["C:\\it's.wav"])
+    expect(argv[argv.length - 1]).toContain("'C:\\it''s.wav'")
   })
 })

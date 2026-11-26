@@ -60,7 +60,7 @@
 ใช้เสียงมาตรฐานที่มีอยู่แล้วในเครื่องคุณ **ฟรี ไม่ต้องดาวน์โหลดเพิ่ม**
 
 - **Mac:** `/System/Library/Sounds` (Glass, Hero, Basso)
-- **Windows:** `C:\Windows\Media` (Windows Notify System Generic, tada, Windows Background · ไม่มีไฟล์ไหนจะลองไฟล์สำรอง)
+- **Windows:** `C:\Windows\Media` (Windows Notify System Generic ×4 + tada, Windows Background · ไม่มีไฟล์ไหนจะลองไฟล์สำรอง) · เล่นผ่าน PowerShell ที่มีในทุกเครื่อง Windows ไม่ต้องลงอะไรเพิ่ม
 - หาไฟล์เสียงไม่เจอ หรือเครื่องเล่นเสียงไม่ได้ = **เงียบ ไม่ขึ้น error** งานของ Claude ไม่สะดุด
 
 ---
@@ -78,7 +78,7 @@
 ## ทำงานอย่างไร (สำหรับคนอยากรู้)
 
 Mod อ่านไฟล์เสียงในเครื่อง ต่อ Glass ×4 กับ Hero เป็นไฟล์ WAV ก้อนเดียว แล้วเล่นผ่าน `$.audio.play` ของ Claude Code
-ไม่เรียก `afplay` หรือโปรแกรมภายนอก จึงใช้ได้ในแอป Claude Desktop · ไม่ส่งข้อมูลใดๆ ออกนอกเครื่อง
+บน Mac ไม่เรียกโปรแกรมภายนอก · บน Windows ให้ PowerShell ของ Windows เล่นไฟล์เสียง (เครื่องเล่นของ Claude Code ไม่มีบน Windows) · ใช้ได้ทั้งในแอป Claude Desktop และ Terminal · ไม่ส่งข้อมูลใดๆ ออกนอกเครื่อง
 
 โครงไฟล์: `hooks/register.ts` (จับเหตุการณ์ + คำสั่ง) · `hooks/logic.ts` (ค่าตั้ง เกณฑ์ ไฟล์เสียง) · `hooks/sound.ts` (ถอด AIFF/WAV และต่อเสียง) · `tests/` (`claude plugin test .`)
 
