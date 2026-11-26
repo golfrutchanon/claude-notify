@@ -1,0 +1,14 @@
+{
+  "name": "cv-notify",
+  "owner": {
+    "name": "Copvang"
+  },
+  "description": "Mod เสียงแจ้งเตือนของ Copvang (ก๊อปวาง) สำหรับ Claude Code",
+  "plugins": [
+    {
+      "name": "copvang-notify",
+      "source": "./",
+      "description": "เสียงแจ้งเตือนสไตล์ก๊อปวาง: Glass ×4 + Hero เมื่อ Claude ตอบจบ ถามคำถาม หรือขออนุญาต · เสียงสั้นเมื่อคำสั่งล้มเหลว Agent ย่อยเสร็จ Context ใกล้เต็ม โควตาใกล้หมด · /notify"
+    }
+  ]
+}
